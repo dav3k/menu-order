@@ -1,0 +1,27 @@
+{
+  "name": "menu-ordering",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development npm-run-all -p dev:api dev:web",
+    "dev:api": "npm --workspace apps/api run dev",
+    "dev:web": "npm --workspace apps/web run dev",
+    "db:generate": "npx prisma generate --schema=packages/db/prisma/schema.prisma",
+    "db:migrate": "npx prisma migrate dev --schema=packages/db/prisma/schema.prisma --name init",
+    "db:deploy": "npx prisma migrate deploy --schema=packages/db/prisma/schema.prisma",
+    "db:seed": "node apps/api/src/seed.js",
+    "build": "npm-run-all -s build:api build:web",
+    "build:api": "npm --workspace apps/api run build",
+    "build:web": "npm --workspace apps/web run build",
+    "start": "npm-run-all -p start:api start:web",
+    "start:api": "npm --workspace apps/api run start",
+    "start:web": "npm --workspace apps/web run start"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "npm-run-all": "^4.1.5"
+  }
+}

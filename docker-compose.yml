@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: menuapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: ./apps/api
+    env_file: .env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    volumes:
+      - ./apps/api:/app
+      - ./packages/db:/packages/db
+    command: sh -c "npx prisma generate --schema=/packages/db/prisma/schema.prisma && npx prisma migrate deploy --schema=/packages/db/prisma/schema.prisma && node src/index.js"
+
+  web:
+    build: ./apps/web
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+
+volumes:
+  pgdata:
